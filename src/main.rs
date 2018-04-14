@@ -70,11 +70,11 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
                     order.push(ch)
                 }
             });
-            for &k in order.iter() {
+            for &k in &order {
                 println!(
                     "{} => {}",
-                    char::from_u32(k as u32).unwrap(),
-                    occurences.get(&k).unwrap()
+                    char::from_u32(u32::from(k)).unwrap(),
+                    occurences[&k]
                 );
             }
             // equality
