@@ -1,3 +1,8 @@
+use std::fs::File;
+use std::io::prelude::Read;
+use std::collections::HashMap;
+use std::char;
+
 fn main() {
     let mut args = std::env::args();
     match args.nth(1)
@@ -22,6 +27,28 @@ fn main() {
                     .collect::<Vec<u8>>(),
             ).unwrap();
             println!("{}", decoded) // ocr
+        }
+        "2" => {
+            let mut file = File::open("/home/scvalex/proj/python-challenge/ocr.txt").unwrap();
+            let mut contents = String::new();
+            file.read_to_string(&mut contents).unwrap();
+            let mut occurences = HashMap::new();
+            let mut order = vec![];
+            contents.as_bytes().iter().for_each(|&ch| {
+                let counter = occurences.entry(ch).or_insert(0);
+                *counter += 1;
+                if *counter == 1 {
+                    order.push(ch)
+                }
+            });
+            for &k in order.iter() {
+                println!(
+                    "{} => {}",
+                    char::from_u32(k as u32).unwrap(),
+                    occurences.get(&k).unwrap()
+                );
+            }
+            // equality
         }
         s => {
             eprintln!("unknown task '{}'", s);
