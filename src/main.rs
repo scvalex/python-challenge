@@ -1,8 +1,11 @@
+extern crate regex;
+
 use std::fs::File;
 use std::io::prelude::Read;
 use std::collections::HashMap;
 use std::char;
 use std::fmt;
+use regex::Regex;
 
 #[derive(Debug)]
 struct Error {
@@ -83,20 +86,11 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             let mut file = File::open("equality.txt")?;
             let mut contents = String::new();
             file.read_to_string(&mut contents)?;
-            for chars in contents.as_bytes().windows(9) {
-                let chars: Vec<char> = chars
-                    .iter()
-                    .map(|&ch| char::from_u32(u32::from(ch)).unwrap())
-                    .collect();
-                if chars[0].is_lowercase() && chars[1].is_uppercase() && chars[2].is_uppercase()
-                    && chars[3].is_uppercase() && chars[4].is_lowercase()
-                    && chars[5].is_uppercase() && chars[6].is_uppercase()
-                    && chars[7].is_uppercase() && chars[8].is_lowercase()
-                {
-                    println!("{:?}", chars)
-                }
-                // linkedlist.php (instead of .html)
+            let re = Regex::new(r"([a-z][A-Z]{3}[a-z][A-Z]{3}[a-z])")?;
+            for cap in re.captures_iter(&contents) {
+                println!("{}", &cap[0].chars().nth(4).unwrap())
             }
+            // linkedlist.php (instead of .html)
         }
         s => {
             return Err(Box::new(Error {
