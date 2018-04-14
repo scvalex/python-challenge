@@ -104,6 +104,11 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             // 8022
             // peak.html
         }
+        "5" => {
+            // import pickle
+            // print "\n".join(["".join([ch * num for (ch, num) in l]) for l in pickle.load(open('banner.p', 'r'))])
+            // channel
+        }
         s => {
             return Err(Box::new(Error {
                 message: format!("unknown task '{}'", s),
