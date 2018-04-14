@@ -1,0 +1,6 @@
+[package]
+name = "python-challenge"
+version = "0.1.0"
+authors = ["Alexandru Scvortov <code@scvalex.net>"]
+
+[dependencies]
