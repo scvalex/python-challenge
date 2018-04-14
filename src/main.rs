@@ -1,4 +1,7 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate regex;
+extern crate reqwest;
 
 use std::fs::File;
 use std::io::prelude::Read;
@@ -6,6 +9,10 @@ use std::collections::HashMap;
 use std::char;
 use std::fmt;
 use regex::Regex;
+
+lazy_static!{
+    static ref NOTHING_REGEX: Regex = Regex::new(r"and the next nothing is ([0-9]+)").unwrap();
+}
 
 #[derive(Debug)]
 struct Error {
@@ -92,6 +99,11 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             }
             // linkedlist.php (instead of .html)
         }
+        "4" => {
+            find_nothing("8022")?
+            // 8022
+            // peak.html
+        }
         s => {
             return Err(Box::new(Error {
                 message: format!("unknown task '{}'", s),
@@ -99,4 +111,19 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
         }
     }
     Ok(())
+}
+
+fn find_nothing(nothing: &str) -> Result<(), Box<std::error::Error>> {
+    let text = reqwest::get(&format!(
+        "http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing={}",
+        nothing
+    ))?.text()?;
+    println!("{}", text);
+    match NOTHING_REGEX.captures(&text) {
+        None => Ok(()),
+        Some(captures) => {
+            println!("{}", &captures[1]);
+            find_nothing(&captures[1])
+        }
+    }
 }
