@@ -58,7 +58,7 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             println!("{}", decoded) // ocr
         }
         "2" => {
-            let mut file = File::open("/home/scvalex/proj/python-challenge/ocr.txt")?;
+            let mut file = File::open("ocr.txt")?;
             let mut contents = String::new();
             file.read_to_string(&mut contents)?;
             let mut occurences = HashMap::new();
@@ -78,6 +78,25 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
                 );
             }
             // equality
+        }
+        "3" => {
+            let mut file = File::open("equality.txt")?;
+            let mut contents = String::new();
+            file.read_to_string(&mut contents)?;
+            for chars in contents.as_bytes().windows(9) {
+                let chars: Vec<char> = chars
+                    .iter()
+                    .map(|&ch| char::from_u32(u32::from(ch)).unwrap())
+                    .collect();
+                if chars[0].is_lowercase() && chars[1].is_uppercase() && chars[2].is_uppercase()
+                    && chars[3].is_uppercase() && chars[4].is_lowercase()
+                    && chars[5].is_uppercase() && chars[6].is_uppercase()
+                    && chars[7].is_uppercase() && chars[8].is_lowercase()
+                {
+                    println!("{:?}", chars)
+                }
+                // linkedlist.php (instead of .html)
+            }
         }
         s => {
             return Err(Box::new(Error {
