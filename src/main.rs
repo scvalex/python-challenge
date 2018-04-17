@@ -12,6 +12,7 @@ use regex::Regex;
 
 lazy_static!{
     static ref NOTHING_REGEX: Regex = Regex::new(r"and the next nothing is ([0-9]+)").unwrap();
+    static ref NOTHING_REGEX2: Regex = Regex::new(r"Next nothing is ([0-9]+)").unwrap();
 }
 
 #[derive(Debug)]
@@ -109,6 +110,7 @@ fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             // print "\n".join(["".join([ch * num for (ch, num) in l]) for l in pickle.load(open('banner.p', 'r'))])
             // channel
         }
+        "6" => find_nothing2("90052")?,
         s => {
             return Err(Box::new(Error {
                 message: format!("unknown task '{}'", s),
@@ -129,6 +131,20 @@ fn find_nothing(nothing: &str) -> Result<(), Box<std::error::Error>> {
         Some(captures) => {
             println!("{}", &captures[1]);
             find_nothing(&captures[1])
+        }
+    }
+}
+
+fn find_nothing2(nothing: &str) -> Result<(), Box<std::error::Error>> {
+    let mut file = File::open(&format!("channel/{}.txt", nothing))?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    println!("{}", contents);
+    match NOTHING_REGEX2.captures(&contents) {
+        None => Ok(()),
+        Some(captures) => {
+            println!("{}", &captures[1]);
+            find_nothing2(&captures[1])
         }
     }
 }
