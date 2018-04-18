@@ -106,30 +106,39 @@ pub fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
 }
 
 fn find_nothing(nothing: &str) -> Result<(), Box<std::error::Error>> {
-    let text = reqwest::get(&format!(
-        "http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing={}",
-        nothing
-    ))?.text()?;
-    println!("{}", text);
-    match NOTHING_REGEX.captures(&text) {
-        None => Ok(()),
-        Some(captures) => {
-            println!("{}", &captures[1]);
-            find_nothing(&captures[1])
+    let mut nothing = nothing.to_owned();
+    loop {
+        let text = reqwest::get(&format!(
+            "http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing={}",
+            nothing
+        ))?.text()?;
+        println!("{}", text);
+        match NOTHING_REGEX.captures(&text) {
+            None => break,
+            Some(captures) => {
+                println!("{}", &captures[1]);
+                nothing = captures[1].to_owned();
+            }
         }
     }
+    Ok(())
 }
 
 fn find_nothing2(nothing: &str) -> Result<(), Box<std::error::Error>> {
-    let mut file = File::open(&format!("channel/{}.txt", nothing))?;
     let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    println!("{}", contents);
-    match NOTHING_REGEX2.captures(&contents) {
-        None => Ok(()),
-        Some(captures) => {
-            println!("{}", &captures[1]);
-            find_nothing2(&captures[1])
+    let mut nothing = nothing.to_owned();
+    loop {
+        let mut file = File::open(&format!("channel/{}.txt", nothing))?;
+        contents.clear();
+        file.read_to_string(&mut contents)?;
+        println!("{}", contents);
+        match NOTHING_REGEX2.captures(&contents) {
+            None => break,
+            Some(captures) => {
+                println!("{}", &captures[1]);
+                nothing = captures[1].to_owned();
+            }
         }
     }
+    Ok(())
 }
