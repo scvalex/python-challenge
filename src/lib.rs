@@ -1,38 +1,23 @@
 #[macro_use]
+extern crate failure;
+#[macro_use]
 extern crate lazy_static;
 extern crate regex;
 extern crate reqwest;
 
+use failure::Error;
 use regex::Regex;
+use std::char;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::Read;
-use std::collections::HashMap;
-use std::char;
-use std::fmt;
-
-#[derive(Debug)]
-struct Error {
-    message: String,
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.message)
-    }
-}
-
-impl std::error::Error for Error {
-    fn description(&self) -> &str {
-        &self.message
-    }
-}
 
 lazy_static!{
     static ref NOTHING_REGEX: Regex = Regex::new(r"and the next nothing is ([0-9]+)").unwrap();
     static ref NOTHING_REGEX2: Regex = Regex::new(r"Next nothing is ([0-9]+)").unwrap();
 }
 
-pub fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
+pub fn solve_task(task: &str) -> Result<(), Error> {
     match task {
         "0" => println!("{}", (2 as i64).pow(38)), // 274877906944
         "1" => {
@@ -96,16 +81,12 @@ pub fn solve_task(task: &str) -> Result<(), Box<std::error::Error>> {
             // channel
         }
         "6" => find_nothing2("90052")?,
-        s => {
-            return Err(Box::new(Error {
-                message: format!("unknown task '{}'", s),
-            }))
-        }
+        s => bail!("unknown task '{}'", s),
     }
     Ok(())
 }
 
-fn find_nothing(nothing: &str) -> Result<(), Box<std::error::Error>> {
+fn find_nothing(nothing: &str) -> Result<(), Error> {
     let mut nothing = nothing.to_owned();
     loop {
         let text = reqwest::get(&format!(
@@ -124,7 +105,7 @@ fn find_nothing(nothing: &str) -> Result<(), Box<std::error::Error>> {
     Ok(())
 }
 
-fn find_nothing2(nothing: &str) -> Result<(), Box<std::error::Error>> {
+fn find_nothing2(nothing: &str) -> Result<(), Error> {
     let mut contents = String::new();
     let mut nothing = nothing.to_owned();
     loop {

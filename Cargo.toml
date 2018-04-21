@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Alexandru Scvortov <code@scvalex.net>"]
 
 [dependencies]
+failure = "0.1"
 lazy_static = "1.0.0"
 regex = "0.2.10"
 reqwest = "0.8.5"
